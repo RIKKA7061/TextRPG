@@ -82,6 +82,37 @@ public class StoryPlayManager : MonoBehaviour
 				SendTEXT.Clear(); // 리스트 초기화
 				storyCount = 0;
 				break;
+			case "Reward":
+				// Story 출력
+				storyCount++;
+				storyFlow++;
+				SendTEXT.Clear(); // 리스트 초기화
+				for (int i = 0; i < storyCount; i++)
+				{
+					SendTEXT.Add(DataManager.dictionary[storyFlow - storyCount + i].Value);
+				}
+				Debug.Log(DataManager.dictionary[storyFlow - 1].Value);
+				
+
+				stackTextManager.Generate_Stack(0, SendTEXT.ToArray(), "Reward");
+				SendTEXT.Clear(); // 리스트 초기화
+				storyCount = 0;
+				break;
+			case "End":
+				// Story 출력
+				storyCount++;
+				storyFlow++;
+				SendTEXT.Clear(); // 리스트 초기화
+				for (int i = 0; i < storyCount - 1; i++)
+				{
+					SendTEXT.Add(DataManager.dictionary[storyFlow - storyCount + i].Value);
+				}
+				stackTextManager.Generate_Stack(0, SendTEXT.ToArray(), "End");
+				SendTEXT.Clear(); // 리스트 초기화
+				storyCount = 0;
+				break;
+
+
 
 
 			// 필요한 경우 다른 카테고리 추가

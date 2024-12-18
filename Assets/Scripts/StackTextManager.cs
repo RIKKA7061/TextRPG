@@ -16,7 +16,10 @@ public class StackTextManager : MonoBehaviour
 	public ContinueManager continueManager;
 	public BattleManager battleManager;
 	public StoryPlayManager storyPlayManager;
-	
+	public RewardManager rewardManager;
+	public EndManager endManager;
+	public TextMeshProUGUI StoryTypingSpeed;
+	public TextMeshProUGUI termSpeed;
 
 	[Header("버튼 프리팹")]
 	public GameObject[] buttonPrefabs; // 생성할 버튼 프리팹 0(예) 1(아니오)
@@ -25,13 +28,48 @@ public class StackTextManager : MonoBehaviour
 	[Header("텍스트 간 개행 간격")]
 	public float textSpacing = 10f; // 텍스트 간 간격
 
-	[Header("텍스트 문장 출력 간 간격")]
-	public float term = 0.5f;
-
-	[Header("타이핑 효과 딜레이")]
+	public float term = 0.5f; // 텍스트 문장 출력 간 간격
 	public float typingSpeed = 0.05f; // 타이핑 딜레이
 
 	private float currentYPosition = 0f; // 텍스트 배치 위치
+
+
+	private void Start()
+	{
+		Set_SettingUI();
+	}
+
+	public void Set_SettingUI()
+	{
+		StoryTypingSpeed.text = "스토리 타이핑 텀: " + typingSpeed.ToString();
+		termSpeed.text = "줄간격 텀: " + term.ToString();
+
+	}
+
+	public void StoryTypingSpeedUP()
+	{
+		typingSpeed -= 0.01f;
+		Set_SettingUI();
+	}
+
+	public void StoryTypingSpeedDown()
+	{
+		typingSpeed += 0.01f;
+		Set_SettingUI();
+	}
+
+	public void TermUP()
+	{
+		term -= 0.01f;
+		Set_SettingUI();
+	}
+
+	public void TermDown()
+	{
+		term += 0.01f;
+		Set_SettingUI();
+	}
+
 
 	public void StoryGenerate_AfterMakeBtns(int colorNum)
 	{
@@ -118,8 +156,28 @@ public class StackTextManager : MonoBehaviour
 		// 스토리 배열 순회
 		foreach (string story in SendTEXT)
 		{
-			yield return StartCoroutine(AddTextWithTypingEffect(colorNum, story));
-			yield return new WaitForSeconds(term); // 텍스트 출력 간 딜레이
+			if (Case == "Reward")
+			{
+				if (story == SendTEXT[SendTEXT.Length - 1])
+				{
+					Debug.Log(story);
+					string returnMessage = rewardManager.RewardAction(story); // 적용
+
+					yield return StartCoroutine(AddTextWithTypingEffect(1, returnMessage));
+					yield return new WaitForSeconds(term); // 텍스트 출력 간 딜레이
+					continueManager.ContinueBtnMaker();
+				}
+				else
+				{
+					yield return StartCoroutine(AddTextWithTypingEffect(colorNum, story));
+					yield return new WaitForSeconds(term); // 텍스트 출력 간 딜레이
+				}
+			}
+			else
+			{
+				yield return StartCoroutine(AddTextWithTypingEffect(colorNum, story));
+				yield return new WaitForSeconds(term); // 텍스트 출력 간 딜레이
+			}
 		}
 
 		Debug.Log("출력 완료");
@@ -135,6 +193,13 @@ public class StackTextManager : MonoBehaviour
 				break;
 			case "Battle":
 				battleManager.BattleBtnMaker(DataManager.dictionary[storyPlayManager.storyFlow - 1].Value);
+				break;
+			case "Reward":
+				Debug.Log("보상");
+				break;
+			case "End":
+				endManager.EndBtnMaker();
+				Debug.Log("다음 장 스토리 버튼 생성");
 				break;
 			default:
 				break;

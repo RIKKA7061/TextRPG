@@ -60,7 +60,7 @@ public class BattleDisplayManager : MonoBehaviour
 		isBattleOver = false;
 		PlayerTurn_Btns(false);
 		Debug.Log($"플레이어: {PlayerStatManager.AvoidRate}");
-		StartCoroutine(DisplayText($"{EnemyStatManager.Job}(이/가) 나타났다."));
+		StartCoroutine(DisplayText($"야생의 {EnemyStatManager.Job}(이/가) 나타났다."));
 		StartCoroutine(DelayedPlayerTurn());
 	}
 
@@ -373,7 +373,7 @@ public class BattleDisplayManager : MonoBehaviour
 
 	IEnumerator DelayedEnemyTurn()
 	{
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(2f);
 		EnemyTurn();
 	}
 }
