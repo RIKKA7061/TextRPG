@@ -31,12 +31,14 @@ public class ButtonAction : MonoBehaviour
 	private StoryPlayManager storyPlayManager;
 	private StackTextManager stackTextManager;
 	private BattleManager battleManager;
+	private EndManager endManager;
 
 	private void Start()
 	{
 		storyPlayManager = FindObjectOfType<StoryPlayManager>();
 		stackTextManager = FindObjectOfType<StackTextManager>();
 		battleManager = FindObjectOfType<BattleManager>();
+		endManager = FindObjectOfType<EndManager>();
 	}
 
 	public int count = 0;
@@ -140,6 +142,14 @@ public class ButtonAction : MonoBehaviour
 		// 계속하기 버튼 클릭 시 동작
 		storyPlayManager.StoryPlay();
 	}
+
+	public void EndBtn()
+	{
+		// 계속하기 버튼 클릭 시 동작
+		storyPlayManager.StoryPlay();
+		endManager.SetJwangUI();
+	}
+
 
 	public void BattleBtn(string EnemyInfos)
 	{

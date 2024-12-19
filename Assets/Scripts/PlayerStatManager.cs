@@ -18,6 +18,8 @@ public class PlayerStatManager : MonoBehaviour
 	/// </summary>
 	/// 
 
+	public Slider HpBarSlider;
+
 	// 스토리 UI
 	[Header("스토리 UI")]
 	public Image UI_Job_img;
@@ -45,7 +47,23 @@ public class PlayerStatManager : MonoBehaviour
     static public int maxHP;
     static public int AvoidRate;
 
-    public void SetStat(int i)
+	public void CheckHp() //*HP 갱신
+	{
+		if (maxHP > 0)
+		{
+			float clampedNowHP = Mathf.Clamp(nowHP, 0, maxHP); // nowHP 범위 제한
+			HpBarSlider.value = (float)clampedNowHP / (float)maxHP;
+		}
+		else
+		{
+			HpBarSlider.value = 0; // maxHP가 0일 때 슬라이더 값 기본값 설정
+			Debug.LogWarning("maxHP가 0입니다. 나눗셈을 수행할 수 없습니다.");
+		}
+	}
+
+
+
+	public void SetStat(int i)
     {
 		Job = Characters[i].Job;
 		Icon = Characters[i].icon;
@@ -67,5 +85,6 @@ public class PlayerStatManager : MonoBehaviour
 		Battle_Icon.sprite = Icon;
 		Battle_HP.text = nowHP + "/" + maxHP;
 		Battle_Job.text = Job;
+		CheckHp();
 	}
 }

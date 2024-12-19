@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class StackTextManager : MonoBehaviour
 {
@@ -28,45 +29,51 @@ public class StackTextManager : MonoBehaviour
 	[Header("텍스트 간 개행 간격")]
 	public float textSpacing = 10f; // 텍스트 간 간격
 
-	public float term = 0.5f; // 텍스트 문장 출력 간 간격
-	public float typingSpeed = 0.05f; // 타이핑 딜레이
+	public float term = 0.01f; // 텍스트 문장 출력 간 간격
+	public float typingSpeed = 0.01f; // 타이핑 딜레이
 
 	private float currentYPosition = 0f; // 텍스트 배치 위치
 
 
 	private void Start()
 	{
+		term = PlayerPrefs.GetFloat("storyTerm", 0.01f); // 기본값 설정
+		typingSpeed = PlayerPrefs.GetFloat("storyTypingSpeed", 0.01f); // 기본값 설정
 		Set_SettingUI();
 	}
 
 	public void Set_SettingUI()
 	{
-		StoryTypingSpeed.text = "스토리 타이핑 텀: " + typingSpeed.ToString();
-		termSpeed.text = "줄간격 텀: " + term.ToString();
+		StoryTypingSpeed.text = "스토리 타이핑 텀: " + typingSpeed.ToString("F2");
+		termSpeed.text = "줄간격 텀: " + term.ToString("F2");
 
 	}
 
 	public void StoryTypingSpeedUP()
 	{
 		typingSpeed -= 0.01f;
+		PlayerPrefs.SetFloat("storyTypingSpeed", typingSpeed);
 		Set_SettingUI();
 	}
 
 	public void StoryTypingSpeedDown()
 	{
 		typingSpeed += 0.01f;
+		PlayerPrefs.SetFloat("storyTypingSpeed", typingSpeed);
 		Set_SettingUI();
 	}
 
 	public void TermUP()
 	{
 		term -= 0.01f;
+		PlayerPrefs.SetFloat("storyTerm", term);
 		Set_SettingUI();
 	}
 
 	public void TermDown()
 	{
 		term += 0.01f;
+		PlayerPrefs.SetFloat("storyTerm", term);
 		Set_SettingUI();
 	}
 
@@ -266,6 +273,8 @@ public class StackTextManager : MonoBehaviour
 			contentHeight += estimatedHeight + textSpacing;
 			contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, contentHeight);
 
+			// 텍스트를 한 번에 설정하고 타이핑 효과 적용
+			string displayedText = "";
 			foreach (string line in lines)
 			{
 				if (string.IsNullOrEmpty(line))
@@ -273,23 +282,25 @@ public class StackTextManager : MonoBehaviour
 					Debug.LogWarning("Empty or null line detected in story.");
 					continue;
 				}
-				else
-				{
-					string displayedText = "";
-					for (int i = 0; i <= line.Length; i++)
-					{
-						displayedText = line.Substring(0, i); // 한 글자씩 추가
-						newText.text = displayedText;  // 타이핑 효과 적용
-						yield return new WaitForSeconds(typingSpeed); // 타이핑 딜레이
 
-						// 스크롤 업데이트
-						ForceScrollToBottom();
+				for (int i = 0; i < line.Length; i++)
+				{
+					displayedText = line.Substring(0, i + 1); // 한 글자씩 추가
+					newText.text = displayedText;  // 타이핑 효과 적용
+
+					// 타이핑 딜레이를 적용하는 대신, 5글자 단위로 UI 업데이트를 최소화
+					if (i % 5 == 0 || i == line.Length - 1)
+					{
+						yield return new WaitForSeconds(typingSpeed); // 타이핑 딜레이
 					}
 
-					// 줄바꿈 추가
-					newText.text += "\n";
-					yield return new WaitForSeconds(term); // 줄바꿈 후 잠시 대기
+					// 스크롤 업데이트
+					ForceScrollToBottom();
 				}
+
+				// 줄바꿈 추가
+				newText.text += "\n";
+				yield return new WaitForSeconds(term); // 줄바꿈 후 잠시 대기
 			}
 		}
 
@@ -305,7 +316,7 @@ public class StackTextManager : MonoBehaviour
 		contentHeight = Mathf.Abs(lastYPosition); // contentHeight를 절대값으로 설정
 		contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, contentHeight); // 콘텐츠의 높이를 텍스트 높이에 맞추기
 
-		// 강제로 레이아웃을 갱신
+		// 레이아웃을 강제로 갱신하는 대신 마지막 한 번만 호출
 		LayoutRebuilder.ForceRebuildLayoutImmediate(contentRect); // 강제 레이아웃 업데이트
 
 		Debug.Log("현재 스크롤 Y(높이) 좌표 갱신 위치:" + contentRect.sizeDelta.y);
@@ -313,6 +324,7 @@ public class StackTextManager : MonoBehaviour
 		// 강제로 스크롤을 맨 아래로 내리기
 		ForceScrollToBottom();
 	}
+
 
 
 	// 스크롤을 강제로 맨 아래로 내리는 함수
@@ -371,6 +383,9 @@ public class StackTextManager : MonoBehaviour
 					break;
 				case 3:
 					button.onClick.AddListener(() => buttonAction.BattleBtn(BtnText));  // 람다식으로 인자를 전달
+					break;
+				case 4:
+					button.onClick.AddListener(() => buttonAction.EndBtn());  // 람다식으로 인자를 전달
 					break;
 			}
 		}

@@ -17,10 +17,10 @@ public class BattleDisplayManager : MonoBehaviour
 	public TextColorFade textColorFade;
 
 	[Header("한글자 씩 타이핑하는 딜레이 초")]
-	public float typingSpeed;
+	static public float typingSpeed;
 
 	[Header("한 스택 씩 생성시 딜레이 초")]
-	public float term;
+	static public float term;
 
 	public GameObject Battle;
 	public GameObject Ending;
@@ -36,6 +36,7 @@ public class BattleDisplayManager : MonoBehaviour
 	private RectTransform contentRect; // Declare contentRect
 
 	public GameObject continueButtonPrefab; // "계속하기" 버튼 프리팹
+	public BattleEffectManager battleEffectManager;
 
 
 	void Start()
@@ -68,14 +69,20 @@ public class BattleDisplayManager : MonoBehaviour
 	{
 		StartCoroutine(DisplayText("어떻게 할까?"));
 		StartCoroutine(DisplayText(" "));
-
-		PlayerTurn_Btns(true);
+		battleEffectManager.PlayerTurnBlinkStart();
+		StartCoroutine(DelayedPlayerTurn_Btns(true));
 	}
 
 	IEnumerator DelayedPlayerTurn()
 	{
 		yield return new WaitForSeconds(1f);
 		PlayerTurn();
+	}
+
+	IEnumerator DelayedPlayerTurn_Btns(bool isPlayerTurn)
+	{
+		yield return new WaitForSeconds(1f);
+		PlayerTurn_Btns(isPlayerTurn);
 	}
 
 	public void PlayerTurn_Btns(bool isPlayerTurn)
@@ -98,6 +105,8 @@ public class BattleDisplayManager : MonoBehaviour
 			HPCheck();
 			if (!isBattleOver)
 			{
+				battleEffectManager.EnemyHit();
+				battleEffectManager.DamageText(PlayerStatManager.Atk, "Enemy"); // damage text effect
 				StartCoroutine(DisplayText($"공격으로 {PlayerStatManager.Atk} 피해를 입혔다."));
 				StartCoroutine(DelayedEnemyTurn());
 			}
@@ -141,6 +150,8 @@ public class BattleDisplayManager : MonoBehaviour
 			HPCheck();
 			if (!isBattleOver)
 			{
+				battleEffectManager.PlayerHit();
+				battleEffectManager.DamageText(EnemyStatManager.Atk,"Player"); // damage text effect
 				StartCoroutine(DisplayText($"적 공격에 {EnemyStatManager.Atk} 피해를 입었다."));
 				StartCoroutine(DelayedPlayerTurn());
 			}
@@ -172,6 +183,7 @@ public class BattleDisplayManager : MonoBehaviour
 			EnemyStatManager.nowHP = 0;
 			enemyStatManager.SetEnemeyBattleUI();
 			playerStatManager.SetUI(); // UI 에 현재 전투 이후에 변경된 스탯 넣기
+			battleEffectManager.ChangeEnemyToGray();
 			StartCoroutine(DisplayText("적을 무찔렀다."));
 
 			StartCoroutine(DelayedCreateContinueBtn());
@@ -231,6 +243,7 @@ public class BattleDisplayManager : MonoBehaviour
 					storyPlayManager.StoryPlay();
 					ClearBattleLog();
 					Destroy(continueButton); // 버튼 제거
+					battleEffectManager.OriginalEnemyColor();
 				});
 			}
 
@@ -373,6 +386,7 @@ public class BattleDisplayManager : MonoBehaviour
 
 	IEnumerator DelayedEnemyTurn()
 	{
+		battleEffectManager.PlayerTurnBlinkStop();
 		yield return new WaitForSeconds(2f);
 		EnemyTurn();
 	}

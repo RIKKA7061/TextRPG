@@ -40,6 +40,22 @@ public class EnemyStatManager : MonoBehaviour
 	static public int maxHP;
 	static public int AvoidRate;
 
+	public Slider HpBarSlider;
+
+	public void CheckHp() //*HP 갱신
+	{
+		if (maxHP > 0)
+		{
+			float clampedNowHP = Mathf.Clamp(nowHP, 0, maxHP); // nowHP 범위 제한
+			HpBarSlider.value = (float)clampedNowHP / (float)maxHP;
+		}
+		else
+		{
+			HpBarSlider.value = 0; // maxHP가 0일 때 슬라이더 값 기본값 설정
+			Debug.LogWarning("maxHP가 0입니다. 나눗셈을 수행할 수 없습니다.");
+		}
+	}
+
 	public void SetEnemyStat(int i)
 	{
 		Job = Enemies[i].Job;
@@ -55,5 +71,6 @@ public class EnemyStatManager : MonoBehaviour
 		Battle_Icon.sprite = Icon;
 		Battle_HP.text = nowHP + "/" + maxHP;
 		Battle_Job.text = Job;
+		CheckHp();
 	}
 }

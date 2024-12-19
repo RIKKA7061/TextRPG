@@ -30,20 +30,17 @@ public class RewardManager : MonoBehaviour
         {
             case "회복":
                 PlayerStatManager.nowHP = PlayerStatManager.nowHP + rewardNum;
-                Debug.Log($"체력이 {rewardNum}만큼 회복되었어요.");
-				resultMessage = $"체력이 {rewardNum}만큼 회복되었어요.";
+				resultMessage = $"체력 +{rewardNum}";
                 if (PlayerStatManager.nowHP > PlayerStatManager.maxHP) PlayerStatManager.nowHP = PlayerStatManager.maxHP;
 				break;
 			case "최대체력 증가":
 				PlayerStatManager.maxHP = PlayerStatManager.maxHP + rewardNum;
                 PlayerStatManager.nowHP = PlayerStatManager.nowHP + rewardNum;
-				Debug.Log($"최대 체력이 {rewardNum}만큼 늘어나게 되었어요.");
-                resultMessage = $"최대 체력이 {rewardNum}만큼 늘어나게 되었어요.";
+                resultMessage = $"최대 체력 +{rewardNum}";
 				break;
 			case "회피율 증가":
 				PlayerStatManager.AvoidRate = PlayerStatManager.AvoidRate + rewardNum;
-				Debug.Log($"회피율이 {rewardNum} 상승하게 되었어요.");
-                resultMessage = $"회피율이 {rewardNum} 상승하게 되었어요. (현재 회피율: {PlayerStatManager.AvoidRate})";
+                resultMessage = $"회피율 +{rewardNum} (현재 회피율: {PlayerStatManager.AvoidRate})";
 				break;
             default:
 				resultMessage = "알 수 없는 보상 타입입니다.";

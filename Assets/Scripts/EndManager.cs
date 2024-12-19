@@ -26,8 +26,7 @@ public class EndManager : MonoBehaviour
 	public void EndBtnMaker()
 	{
 		JwangNum++; // 장 넘버 UP
-		SetJwangUI();
-		stackTextManager.AddButtonBelowLastText(2, "다음 장 스토리");
+		stackTextManager.AddButtonBelowLastText(4, $"{JwangNum} 장 돌입"); //BtnText
 	}
 
 	public void SetJwangUI()
