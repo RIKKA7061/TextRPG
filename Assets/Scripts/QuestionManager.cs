@@ -17,11 +17,16 @@ public class QuestionManager : MonoBehaviour
 	public void QuestionBtnMaker()
 	{
 		Debug.Log(DataManager.dictionary[storyPlayManager.storyFlow- 1].Value);
-		string []AB = DataManager.dictionary[storyPlayManager.storyFlow - 1].Value.Split(':');
-		string A = AB[0];
-		string B = AB[1];
+		string []questions = DataManager.dictionary[storyPlayManager.storyFlow - 1].Value.Split(':');
 
-		stackTextManager.AddButtonBelowLastText(0, A);
-		stackTextManager.AddButtonBelowLastText(1, B);
+		Debug.Log($"Question Count: {questions.Length}");
+
+		for(int i = 0;  i < questions.Length; i++)
+		{
+			stackTextManager.AddButtonBelowLastText(i+5, questions[i]);
+		}
+
+		//stackTextManager.AddButtonBelowLastText(0, questions[0]);
+		//stackTextManager.AddButtonBelowLastText(1, questions[1]);
 	}
 }

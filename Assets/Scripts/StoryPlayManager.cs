@@ -12,6 +12,7 @@ public class StoryPlayManager : MonoBehaviour
 
 	public void StoryPlay()
 	{
+		// no more story..
 		if (!DataManager.dictionary.ContainsKey(storyFlow))
 		{
 			Debug.Log($"Key '{storyFlow}' not found in the dictionary.");
@@ -46,10 +47,9 @@ public class StoryPlayManager : MonoBehaviour
 				storyCount = 0;
 				break;
 			case "Root1":
-				storyFlow++;
-				StoryPlay();
-				break;
 			case "Root2":
+			case "Root3":
+			case "Root4":
 				storyFlow++;
 				StoryPlay();
 				break;
@@ -62,6 +62,8 @@ public class StoryPlayManager : MonoBehaviour
 			case "End":
 				SendTextToStack("End", 1);
 				break;
+			case "EndPage":
+
 			default:
 				// Exceptions
 				Debug.Log($"Unknown category: {Category}");

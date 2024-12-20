@@ -6,7 +6,13 @@ using UnityEngine.SceneManagement;
 public class RestartManager : MonoBehaviour
 {
 	public GameObject Ending;
-    public void RestartBtn()
+
+	public void RestartBtnMaker()
+	{
+
+	}
+
+	public void RestartBtnAction()
     {
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		Ending.SetActive(false);

@@ -12,6 +12,7 @@ public class StackTextManager : MonoBehaviour
 	static public string[] storyArray = new string[100]; // 스토리 배열
 	public ScrollRect scrollRect; // ScrollRect 컴포넌트
 	public RectTransform contentRect; // ScrollRect의 컨텐츠 영역
+	
 	public QuestionManager questionManager;
 	public ButtonAction buttonActions;
 	public ContinueManager continueManager;
@@ -19,8 +20,11 @@ public class StackTextManager : MonoBehaviour
 	public StoryPlayManager storyPlayManager;
 	public RewardManager rewardManager;
 	public EndManager endManager;
+	public RestartManager restartManager;
+
 	public TextMeshProUGUI StoryTypingSpeed;
 	public TextMeshProUGUI termSpeed;
+
 
 	[Header("버튼 프리팹")]
 	public GameObject[] buttonPrefabs; // 생성할 버튼 프리팹 0(예) 1(아니오)
@@ -208,6 +212,9 @@ public class StackTextManager : MonoBehaviour
 				endManager.EndBtnMaker();
 				Debug.Log("다음 장 스토리 버튼 생성");
 				break;
+			case "EndPage":
+				//
+				break;
 			default:
 				break;
 		}
@@ -338,56 +345,51 @@ public class StackTextManager : MonoBehaviour
 
 
 
-	// 버튼 생성 함수
+	// btn make method
 	public void AddButtonBelowLastText(int i, string BtnText)
 	{
 		// 버튼 생성
 		GameObject newButton = Instantiate(buttonPrefabs[i], contentRect);
 
+		// 부모의 크기 가져오기
+		float parentWidth = parentRect.rect.width;
+
 		// 버튼 RectTransform 설정
 		RectTransform buttonRect = newButton.GetComponent<RectTransform>();
+		buttonRect.sizeDelta = new Vector2(parentWidth - 50f, buttonRect.sizeDelta.y); // 부모 너비에 맞춤
 		buttonRect.anchorMin = new Vector2(0.5f, 1f);
 		buttonRect.anchorMax = new Vector2(0.5f, 1f);
 		buttonRect.pivot = new Vector2(0.5f, 1f);
 
-		// 버튼 텍스트 설정
+		// btn text set
 		TextMeshProUGUI buttonText = newButton.GetComponentInChildren<TextMeshProUGUI>();
-		if (buttonText != null && i != 3)
-		{
-			buttonText.text = BtnText;
-		}
-		else if (i == 3)
-		{
-			Debug.Log("전투용 버튼 클릭함");
-		}
-		else
-		{
-			Debug.LogWarning("Button prefab does not contain a TextMeshProUGUI component.");
-		}
 
-		// 버튼 동작 설정
+		// Exception : battle
+		if(i != 3) buttonText.text = BtnText;
+
+		// Set Btn Actions
 		Button button = newButton.GetComponent<Button>();
-		ButtonAction buttonAction = newButton.GetComponent<ButtonAction>();  // 버튼에 연결된 ButtonAction 컴포넌트 가져오기
-		if (button != null && buttonAction != null)
+		ButtonAction buttonAction = newButton.GetComponent<ButtonAction>();
+		switch (i)
 		{
-			switch (i)
-			{
-				case 0:
-					button.onClick.AddListener(() => buttonAction.YesAction(BtnText));  // 람다식으로 인자를 전달
-					break;
-				case 1:
-					button.onClick.AddListener(() => buttonAction.NoAction(BtnText));  // 람다식으로 인자를 전달
-					break;
-				case 2:
-					button.onClick.AddListener(() => buttonAction.ContinueBtn());  // 람다식으로 인자를 전달
-					break;
-				case 3:
-					button.onClick.AddListener(() => buttonAction.BattleBtn(BtnText));  // 람다식으로 인자를 전달
-					break;
-				case 4:
-					button.onClick.AddListener(() => buttonAction.EndBtn());  // 람다식으로 인자를 전달
-					break;
-			}
+			case 1:
+				button.onClick.AddListener(() => buttonAction.RestartBtn());
+				break;
+			case 2:
+				button.onClick.AddListener(() => buttonAction.ContinueBtn());
+				break;
+			case 3:
+				button.onClick.AddListener(() => buttonAction.BattleBtn(BtnText));
+				break;
+			case 4:
+				button.onClick.AddListener(() => buttonAction.EndBtn());
+				break;
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+				button.onClick.AddListener(() => buttonAction.QuestionChoiceAction(BtnText, i));
+				break;
 		}
 
 		// 버튼 위치 설정

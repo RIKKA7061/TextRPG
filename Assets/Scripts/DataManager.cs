@@ -124,7 +124,7 @@ public class DataManager : MonoBehaviour
 
 	string SHEET; 
 	const string url = "https://docs.google.com/spreadsheets/d/1rBiPujtyM8tAufwLgTpsxa_berG4MC5jN0wqpmlpUvg/export?format=tsv&range=A2:I1000";
-
+	
 	IEnumerator Start()
 	{
 		using (UnityWebRequest online_sheet = UnityWebRequest.Get(url))
