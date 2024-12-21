@@ -206,14 +206,14 @@ public class StackTextManager : MonoBehaviour
 				battleManager.BattleBtnMaker(DataManager.dictionary[storyPlayManager.storyFlow - 1].Value);
 				break;
 			case "Reward":
-				Debug.Log("보상");
+				Debug.Log("Reward");
 				break;
 			case "End":
 				endManager.EndBtnMaker();
 				Debug.Log("다음 장 스토리 버튼 생성");
 				break;
 			case "EndPage":
-				//
+				restartManager.RestartBtnMaker();
 				break;
 			default:
 				break;

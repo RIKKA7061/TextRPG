@@ -38,7 +38,10 @@ public class CharacterChoiceManager : MonoBehaviour
 	void CreateButtons()
 	{
 		Vector2 startPosition = new Vector2(0, 0); // 시작 위치
-		float buttonSpacing = 100f; // 버튼 간 간격
+		float buttonSpacing = 120f; // 버튼 간 간격
+
+		RectTransform containerRectTransform = buttonContainer.GetComponent<RectTransform>(); // 버튼 컨테이너의 RectTransform
+		float containerWidth = containerRectTransform.rect.width; // 버튼 컨테이너의 가로 길이
 
 		for (int i = 0; i < storyParams.Count; i++)
 		{
@@ -53,6 +56,9 @@ public class CharacterChoiceManager : MonoBehaviour
 			RectTransform rectTransform = newButton.GetComponent<RectTransform>();
 			rectTransform.anchoredPosition = startPosition - new Vector2(0, i * buttonSpacing);
 
+			// 버튼의 가로 길이 설정 (컨테이너의 가로 길이에 맞춤)
+			rectTransform.sizeDelta = new Vector2(containerWidth, rectTransform.sizeDelta.y);
+
 			// 이벤트 할당 (람다 표현식 사용)
 			int index = i; // 람다 캡처 문제 방지
 			newButton.GetComponent<Button>().onClick.AddListener(() =>
@@ -61,6 +67,7 @@ public class CharacterChoiceManager : MonoBehaviour
 			});
 		}
 	}
+
 
 	// StoryDownLoading 함수 (예시)
 	void StoryDownLoading(int param1, int param2)

@@ -6414,6 +6414,7 @@ MonoBehaviour:
   storyPlayManager: {fileID: 1557519679}
   rewardManager: {fileID: 963732899}
   endManager: {fileID: 599860045}
+  restartManager: {fileID: 1271449960}
   StoryTypingSpeed: {fileID: 1892309117}
   termSpeed: {fileID: 1799570735}
   buttonPrefabs:
@@ -8662,7 +8663,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 204.4
+  m_fontSize: 177.2
   m_fontSizeBase: 138.11
   m_fontWeight: 400
   m_enableAutoSizing: 1

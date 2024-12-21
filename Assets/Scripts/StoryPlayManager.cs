@@ -63,7 +63,8 @@ public class StoryPlayManager : MonoBehaviour
 				SendTextToStack("End", 1);
 				break;
 			case "EndPage":
-
+				SendTextToStack("EndPage", 0);
+				break;
 			default:
 				// Exceptions
 				Debug.Log($"Unknown category: {Category}");
