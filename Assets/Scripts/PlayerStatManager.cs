@@ -8,29 +8,32 @@ using UnityEngine.UI;
 public class PlayerStatManager : MonoBehaviour
 {
 	/// <summary>
-	/// 플레이어
-	/// 현재 체력 nowHP
-	/// 최대 체력 maxHP
-	/// 회피율    AvoidRate
-	/// 이것들을 신호 받아서 해당 직업 스크립터블 오브젝트의 값에다가 전달해줍니다.
-	/// 그리고 그 스탯을 UI로 나타내줍니다.
+	/// 
+	/// player
+	/// nowHP
+	/// maxHP
+	/// AvoidRate
+	/// Scriptable Object -> static -> UI
 	/// 
 	/// </summary>
-	/// 
 
 	public Slider HpBarSlider;
 
-	// 스토리 UI
-	[Header("스토리 UI")]
+	[Header("Story UI")]
 	public Image UI_Job_img;
 	public TextMeshProUGUI HP;
 	public TextMeshProUGUI NowCharacter_Job;
 
-	// 배틀 UI
-	[Header("배틀 UI")]
+	[Header("Battle UI")]
 	public Image Battle_Icon;
 	public TextMeshProUGUI Battle_HP;
 	public TextMeshProUGUI Battle_Job;
+
+	[Header("Stat UI")]
+	public TextMeshProUGUI statName;
+	public TextMeshProUGUI statHP;
+	public TextMeshProUGUI statAtk;
+	public TextMeshProUGUI statAvoidRate;
 
 	public StoryPlayManager storyPlayManager;
 
@@ -86,5 +89,14 @@ public class PlayerStatManager : MonoBehaviour
 		Battle_HP.text = nowHP + "/" + maxHP;
 		Battle_Job.text = Job;
 		CheckHp();
+	}
+
+	public void OnClick_StatShowBtn()
+	{
+		// Name, HP, Atk, AvoidRate
+		statName.text = Job.ToString() + " " + "스테이터스";
+		statHP.text = "현재 체력: " + nowHP.ToString();
+		statAtk.text = "공격력: " + Atk.ToString();
+		statAvoidRate.text = "회피율" + AvoidRate.ToString();
 	}
 }

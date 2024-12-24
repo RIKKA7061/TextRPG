@@ -226,7 +226,7 @@ public class StackTextManager : MonoBehaviour
 	private float contentHeight = 0f;  // 전체 콘텐츠 높이 추적
 
 
-	// string 스토리한 문장을 한글자씩 타이핑 해주는 함수
+	// generate story
 	private IEnumerator AddTextWithTypingEffect(int colorNum, string story)
 	{
 		// TMP 프리팹 인스턴스 생성
@@ -332,9 +332,7 @@ public class StackTextManager : MonoBehaviour
 		ForceScrollToBottom();
 	}
 
-
-
-	// 스크롤을 강제로 맨 아래로 내리는 함수
+	// scroll bottom
 	private void ForceScrollToBottom()
 	{
 		Canvas.ForceUpdateCanvases(); // UI 강제 업데이트
@@ -342,10 +340,7 @@ public class StackTextManager : MonoBehaviour
 		Canvas.ForceUpdateCanvases(); // 다시 강제 업데이트
 	}
 
-
-
-
-	// btn make method
+	// generate button
 	public void AddButtonBelowLastText(int i, string BtnText)
 	{
 		// 버튼 생성
@@ -410,4 +405,43 @@ public class StackTextManager : MonoBehaviour
 		Canvas.ForceUpdateCanvases();
 		scrollRect.verticalNormalizedPosition = 0f;
 	}
+
+
+	// generate image
+	/*public void AddImageBelowLastText(Sprite imageSprite)
+	{
+		// 이미지 오브젝트 생성
+		GameObject newImage = new GameObject("ImageObject");
+		newImage.transform.SetParent(contentRect, false);
+
+		// Image 컴포넌트 추가 및 설정
+		Image imageComponent = newImage.AddComponent<Image>();
+		imageComponent.sprite = imageSprite;
+		imageComponent.preserveAspect = true; // 비율 유지
+
+		// RectTransform 설정
+		RectTransform imageRect = newImage.GetComponent<RectTransform>();
+		imageRect.sizeDelta = new Vector2(contentRect.rect.width - 50f, 200f); // 너비를 부모에 맞추고 높이는 임의 값 설정
+		imageRect.anchorMin = new Vector2(0.5f, 1f);
+		imageRect.anchorMax = new Vector2(0.5f, 1f);
+		imageRect.pivot = new Vector2(0.5f, 1f);
+
+		// 이미지 위치 설정
+		float imageHeight = imageRect.sizeDelta.y;
+		imageRect.anchoredPosition = new Vector2(0f, lastYPosition - buttonSpacing);
+
+		// 크기 강제 적용
+		LayoutRebuilder.ForceRebuildLayoutImmediate(imageRect);
+
+		// Y 위치 업데이트
+		lastYPosition -= imageHeight + buttonSpacing;
+		currentYPosition = lastYPosition;
+
+		// 콘텐츠 높이 업데이트
+		contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, Mathf.Abs(lastYPosition));
+
+		// 스크롤 강제 업데이트
+		Canvas.ForceUpdateCanvases();
+		scrollRect.verticalNormalizedPosition = 0f;
+	}*/
 }

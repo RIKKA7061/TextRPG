@@ -7,29 +7,20 @@ using UnityEngine.UI;
 public class EnemyStatManager : MonoBehaviour
 {
 	/// <summary>
-	/// 적의 스테이터스를 만드는 일이에요.
-	/// 실행할 조건 = 전투하기 눌렀을 때
-	/// 일반몹A:0 문자열 받아서 -> :로 나눈다.
-	/// 기존 enemystat에서 <- 0번 몬스터 스텟 적용한다.
-	/// 배틀 UI에 적용시키는 함수도 만든다. <- 나중에 전투시 이 함수 발동 시켜서 적용된 몬스터 스텟을 UI에 쏜다.
-	/// 
-	/// 하는 일은 Player Stat Manager와 거의 다른점이 없다.
-	/// 당연히 몬스터들은 스크립터블 오브젝트로 관리되며
-	/// 배열의 순번에 따라서 된다.
-	/// 
-	/// 즉, 
-	/// 0번때 = 게임개발자
-	/// 1번때 = 보안전문가
-	/// 
-	/// [] Status 해서 끌어치기 하면 될듯
+	/// battle
+	/// Monster:0(scriptable object) -> stat -> UI
 	/// </summary>
-	/// 
 
-	// 배틀 UI
-	[Header("적 배틀 UI")]
+	[Header("Battle UI")]
 	public Image Battle_Icon;
 	public TextMeshProUGUI Battle_HP;
 	public TextMeshProUGUI Battle_Job;
+
+	[Header("Stat UI")]
+	public TextMeshProUGUI statName;
+	public TextMeshProUGUI statHP;
+	public TextMeshProUGUI statAtk;
+	public TextMeshProUGUI statAvoidRate;
 
 	public Status[] Enemies;
 
@@ -42,7 +33,8 @@ public class EnemyStatManager : MonoBehaviour
 
 	public Slider HpBarSlider;
 
-	public void CheckHp() //*HP 갱신
+	// HP -> Slider(UI)
+	public void CheckHp()
 	{
 		if (maxHP > 0)
 		{
@@ -72,5 +64,14 @@ public class EnemyStatManager : MonoBehaviour
 		Battle_HP.text = nowHP + "/" + maxHP;
 		Battle_Job.text = Job;
 		CheckHp();
+	}
+
+	public void OnClick_EnemyStatShowBtn()
+	{
+		// Name, HP, Atk, AvoidRate
+		statName.text = Job.ToString() + "(적) " + "스테이터스";
+		statHP.text = "현재 체력: " + nowHP.ToString();
+		statAtk.text = "공격력: " + Atk.ToString();
+		statAvoidRate.text = "회피율" + AvoidRate.ToString();
 	}
 }
