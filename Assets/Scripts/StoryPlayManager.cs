@@ -9,6 +9,7 @@ public class StoryPlayManager : MonoBehaviour
 	public int storyFlow = 1;
 	public int storyCount = 0;
 	public List<string> SendTEXT = new List<string>();
+	public string NowMultiQuestionMode = "Root0Question"; // Root1Question, Root2Question, Root3Question...
 
 	public void StoryPlay()
 	{

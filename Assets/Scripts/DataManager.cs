@@ -146,6 +146,7 @@ public class DataManager : MonoBehaviour
 	public void StoryDownLoading(int Category, int Text)
 	{
 		string[] sheet = SHEET.Split("\n");
+
 		dictionary.Clear();
 
 		for (int i = 0; i < 1000; i++)
@@ -161,9 +162,9 @@ public class DataManager : MonoBehaviour
 
 			StoryData storyData = new StoryData(hang[Category], hang[Text]);
 
-			Debug.Log(i + 1);
-			Debug.Log(storyData.Key);
-			Debug.Log(storyData.Value);
+			//Debug.Log(i + 1);
+			//Debug.Log(storyData.Key);
+			//Debug.Log(storyData.Value);
 
 			dictionary.Add(i + 1, storyData);
 		}

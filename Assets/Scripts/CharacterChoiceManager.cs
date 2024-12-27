@@ -1,14 +1,14 @@
-using UnityEngine;
-using UnityEngine.UI;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class CharacterChoiceManager : MonoBehaviour
 {
-	// Button 프리팹 (Unity 에디터에서 연결)
 	public GameObject buttonPrefab;
-	public Transform buttonContainer; // 버튼들을 넣을 부모 오브젝트
+	public Transform buttonContainer;
 
 	public StoryPlayManager storyPlayManager;
 
@@ -17,50 +17,53 @@ public class CharacterChoiceManager : MonoBehaviour
 	public GameObject Character_Choice_Pannel;
 
 	public DataManager dataManager;
+	private ShopManager shopManager; // cache
+	private ShopUIManager shopUIManager;
 
-	string[] Characters = { "기자", "역사학자", "형사", "배우"};
+	// JOB name
+	string[] Characters = { "기자", "역사학자", "형사", "배우" };
 
-
-	// 스토리 함수에 들어갈 매개변수 세트
-	private List<(int, int)> storyParams = new List<(int, int)>
+	public List<(int, int)> storyParams = new List<(int, int)>
 	{
-		(1, 2), // 기자
-        (3, 4), // 역사학자
-        (5, 6), // 형사
-        (7, 8)  // 배우
+		(1, 2), // reporter story
+        (3, 4), // historian story
+        (5, 6), // detector story
+        (7, 8)  // actor story
     };
 
 	void Start()
 	{
+		shopManager = FindAnyObjectByType<ShopManager>();
+		shopUIManager = FindAnyObjectByType<ShopUIManager>();
 		CreateButtons();
 	}
 
 	void CreateButtons()
 	{
-		Vector2 startPosition = new Vector2(0, 0); // 시작 위치
-		float buttonSpacing = 120f; // 버튼 간 간격
+		Vector2 startPosition = new Vector2(0, 0); // startPos
+		float buttonSpacing = 120f; // button between space
 
-		RectTransform containerRectTransform = buttonContainer.GetComponent<RectTransform>(); // 버튼 컨테이너의 RectTransform
-		float containerWidth = containerRectTransform.rect.width; // 버튼 컨테이너의 가로 길이
+		RectTransform containerRectTransform = buttonContainer.GetComponent<RectTransform>();// container Rect
+		float containerWidth = containerRectTransform.rect.width;// container Rect width
 
 		for (int i = 0; i < storyParams.Count; i++)
 		{
-			// 버튼 동적 생성
+			// generate button
 			GameObject newButton = Instantiate(buttonPrefab, buttonContainer);
 			newButton.name = $"CharacterButton_{i + 1}";
 
-			// 버튼 텍스트 설정
+			// button text
 			newButton.GetComponentInChildren<TextMeshProUGUI>().text = Characters[i];
 
-			// 버튼 위치 설정
+			// button Pos
 			RectTransform rectTransform = newButton.GetComponent<RectTransform>();
 			rectTransform.anchoredPosition = startPosition - new Vector2(0, i * buttonSpacing);
 
-			// 버튼의 가로 길이 설정 (컨테이너의 가로 길이에 맞춤)
+			// button width
 			rectTransform.sizeDelta = new Vector2(containerWidth, rectTransform.sizeDelta.y);
 
-			// 이벤트 할당 (람다 표현식 사용)
-			int index = i; // 람다 캡처 문제 방지
+			// get ACTION to button
+			int index = i; // 0 1 2... storyParams.Count
 			newButton.GetComponent<Button>().onClick.AddListener(() =>
 			{
 				StoryDownLoading(storyParams[index].Item1, storyParams[index].Item2);
@@ -68,18 +71,68 @@ public class CharacterChoiceManager : MonoBehaviour
 		}
 	}
 
-
-	// StoryDownLoading 함수 (예시)
 	void StoryDownLoading(int param1, int param2)
 	{
-		Debug.Log($"해당 캐릭터의 스토리 파싱 작업 실행 - {param1}열 , {param2}열");
-		int NowMode = param2 / 2 - 1; // 0,1,2,3 = 기자,역사학자,형사,배우
-		dataManager.StoryDownLoading(param1, param2);			// 해당 캐릭터의 스토리를 파싱합니다.
-		Debug.Log($"{NowMode} 모드");						// 캐릭터 모드
-		playerStatManager.SetStat(NowMode);				// 캐릭터의 직업의 스탯을 현재 플레이어의 스탯으로 만듦
-		playerStatManager.SetUI();				// 캐릭터의 직업 및 스텟을 ui에 등록
-		Character_Choice_Pannel.SetActive(false);				// 캐릭터 선택 판때기 끄기
-		storyPlayManager.StoryPlay();   // 스토리 재생
-		Debug.Log(Characters[NowMode] + "스토리를 재생합니다.");
+		int index = param2 / 2 - 1;
+		Debug.Log($"{Characters[index]} story");
+
+		if (ShopManager.isRelease[index] == true)
+		{
+			StartCoroutine(StoryPlayCoroutine(param1, param2));
+		}
+		else
+		{
+			if (ShopManager.coins >= 1)
+			{
+				shopManager.SubtractMoney();
+				ShopManager.isRelease[index] = true;
+				shopManager.SaveIsRelease();
+				Debug.Log("Buy a new STORY!!!");
+
+				StartCoroutine(StoryPlayCoroutine(param1, param2));
+			}
+			else
+			{
+				Debug.Log("UnReleased!");
+				Debug.Log($"Left Money: {ShopManager.coins}");
+				shopUIManager.ShowMoneyIssue();
+			}
+		}
 	}
+
+	//void StoryPlay(int param1, int param2)
+	//{
+	//	//Debug.Log($"Parsing: {param1} , {param2}");
+	//	int NowMode = param2 / 2 - 1; // 0,1,2,3 EACH JOB
+	//	dataManager.StoryDownLoading(param1, param2); // Start Parsing 
+	//	//Debug.Log($"{NowMode} Mode"); // choiced Character
+	//	playerStatManager.SetStat(NowMode); // PlayerStat Update
+	//	playerStatManager.SetUI(); // UI Update
+	//	Character_Choice_Pannel.SetActive(false); // OFF Character Choice Window
+	//	storyPlayManager.StoryPlay();   // Story Play
+	//	//Debug.Log(Characters[NowMode] + "Story Play");
+	//}
+	// Change the method to return IEnumerator for coroutine
+	IEnumerator StoryPlayCoroutine(int param1, int param2)
+	{
+		// Wait for 1 second before continuing
+		yield return new WaitForSeconds(1f);
+
+		// Now execute the rest of the logic
+		int NowMode = param2 / 2 - 1; // 0,1,2,3 EACH JOB
+		dataManager.StoryDownLoading(param1, param2); // Start Parsing 
+													  //Debug.Log($"{NowMode} Mode"); // choiced Character
+		playerStatManager.SetStat(NowMode); // PlayerStat Update
+		playerStatManager.SetUI(); // UI Update
+		Character_Choice_Pannel.SetActive(false); // OFF Character Choice Window
+		storyPlayManager.StoryPlay();   // Story Play
+										//Debug.Log(Characters[NowMode] + "Story Play");
+	}
+
+	// Call this method to start the coroutine
+	void StartStoryPlay(int param1, int param2)
+	{
+		StartCoroutine(StoryPlayCoroutine(param1, param2));
+	}
+
 }

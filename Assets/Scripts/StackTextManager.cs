@@ -146,7 +146,7 @@ public class StackTextManager : MonoBehaviour
 	public IEnumerator Stack(int colorNum, string[] SendTEXT, string Case)
 	{
 		// Y 위치 초기화 로그
-		Debug.Log("Y 위치 초기화");
+		//Debug.Log("Y 위치 초기화");
 
 		// contentRect의 자식 객체를 모두 파괴
 		foreach (Transform child in contentRect)
@@ -162,7 +162,7 @@ public class StackTextManager : MonoBehaviour
 		contentRect.sizeDelta = new Vector2(contentRect.sizeDelta.x, 0f); // Set height to 0 initially
 
 		// currentYPosition 초기화 후 상태 출력
-		Debug.Log($"currentYPosition 초기화 후: {currentYPosition}");
+		//Debug.Log($"currentYPosition 초기화 후: {currentYPosition}");
 
 		// 스토리 배열 순회
 		foreach (string story in SendTEXT)
@@ -191,7 +191,7 @@ public class StackTextManager : MonoBehaviour
 			}
 		}
 
-		Debug.Log("출력 완료");
+		//Debug.Log("출력 완료");
 
 		// Case에 따른 동작 처리
 		switch (Case)
@@ -326,7 +326,7 @@ public class StackTextManager : MonoBehaviour
 		// 레이아웃을 강제로 갱신하는 대신 마지막 한 번만 호출
 		LayoutRebuilder.ForceRebuildLayoutImmediate(contentRect); // 강제 레이아웃 업데이트
 
-		Debug.Log("현재 스크롤 Y(높이) 좌표 갱신 위치:" + contentRect.sizeDelta.y);
+		//Debug.Log("현재 스크롤 Y(높이) 좌표 갱신 위치:" + contentRect.sizeDelta.y);
 
 		// 강제로 스크롤을 맨 아래로 내리기
 		ForceScrollToBottom();

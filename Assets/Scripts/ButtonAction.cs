@@ -24,6 +24,14 @@ public class ButtonAction : MonoBehaviour
 
 	public void QuestionChoiceAction(string content, int i)
 	{
+		//Debug.Log($"{content} btn Clicked!");
+		Content = content;
+
+		QuestionAction(i);
+	}
+
+	public void MultiQuestionChoiceAction(string content, int i)
+	{
 		Debug.Log($"{content} btn Clicked!");
 		Content = content;
 
@@ -64,9 +72,37 @@ public class ButtonAction : MonoBehaviour
 		RootCounting(nowRoot);
 	}
 
+	public void MultiQuestionAction(int btnType) // 9 10 11 12 = MultiRoot1, MultiRoot2, MultiRoot3, MultiRoot4
+	{
+		string Case = DataManager.dictionary[storyPlayManager.storyFlow - 1].Key;
+
+		string nowRoot = "Minsu is the best";
+
+		switch (btnType)
+		{
+			case 9:
+				nowRoot = "MultiRoot1";
+				storyPlayManager.NowMultiQuestionMode = "Root1Question";
+				break;
+			case 10:
+				nowRoot = "MultiRoot2";
+				storyPlayManager.NowMultiQuestionMode = "Root2Question";
+				break;
+			case 11:
+				nowRoot = "MultiRoot3";
+				storyPlayManager.NowMultiQuestionMode = "Root3Question";
+				break;
+			case 12:
+				nowRoot = "MultiRoot4";
+				storyPlayManager.NowMultiQuestionMode = "Root4Question";
+				break;
+		}
+		MultiRootCounting(nowRoot);
+	}
+
 	public void RootCounting(string nowRoot)
 	{
-		Debug.Log(DataManager.dictionary[storyPlayManager.storyFlow].Key);
+		//Debug.Log(DataManager.dictionary[storyPlayManager.storyFlow].Key);
 
 		string Case = DataManager.dictionary[storyPlayManager.storyFlow].Key; // Root1, Root2, Root3, Rooot4
 
@@ -88,6 +124,35 @@ public class ButtonAction : MonoBehaviour
 			RootCounting(nowRoot);
 		}
 		else if (Case == "Story")
+		{
+			MakeBaeYeol();
+		}
+	}
+
+	public void MultiRootCounting(string nowRoot)
+	{
+		Debug.Log(DataManager.dictionary[storyPlayManager.storyFlow].Key);
+
+		string Case = DataManager.dictionary[storyPlayManager.storyFlow].Key; // Root1, Root2, Root3, Rooot4
+
+		if (Case == nowRoot) // MultiRoot1 == MultiRoot1
+		{
+			if (DataManager.dictionary[storyPlayManager.storyFlow].Value.Contains("&플레이어 직업&"))
+			{
+				DataManager.dictionary[storyPlayManager.storyFlow].Value
+					= DataManager.dictionary[storyPlayManager.storyFlow].Value.Replace("&플레이어 직업&", PlayerStatManager.Job);
+			}
+			list.Add(DataManager.dictionary[storyPlayManager.storyFlow].Value);
+			count++;
+			storyPlayManager.storyFlow++;
+			MultiRootCounting(nowRoot);
+		}
+		else if (Case != nowRoot && Case != "Root1Root1") // Root1Question == Root1Question // != MultiRoot(1~4)
+		{
+			storyPlayManager.storyFlow++;
+			MultiRootCounting(nowRoot);
+		}
+		else if (Case == "Root1Root1")
 		{
 			MakeBaeYeol();
 		}
@@ -143,7 +208,7 @@ public class ButtonAction : MonoBehaviour
 
 	public void MakeBaeYeol()
 	{
-		string[] SendText = new string[count + 1]; // (Root1 내용들) + (1. 초대장을 조사한다.)
+		string[] SendText = new string[count + 1]; // (Root1 Content) + (1. rikka.)
 		SendText[0] = Content;
 		for(int i = 1; i <= count; i++)
 		{
@@ -151,7 +216,7 @@ public class ButtonAction : MonoBehaviour
 		}
         foreach (var item in SendText)
         {
-			Debug.Log($"민수는 최고야: {item}");
+			//Debug.Log($"Rikka is Best: {item}");
         }
 		list.Clear();
 

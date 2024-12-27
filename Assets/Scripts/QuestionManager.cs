@@ -19,7 +19,7 @@ public class QuestionManager : MonoBehaviour
 		Debug.Log(DataManager.dictionary[storyPlayManager.storyFlow- 1].Value);
 		string []questions = DataManager.dictionary[storyPlayManager.storyFlow - 1].Value.Split(':');
 
-		Debug.Log($"Question Count: {questions.Length}");
+		//Debug.Log($"Question Count: {questions.Length}");
 
 		for(int i = 0;  i < questions.Length; i++)
 		{
